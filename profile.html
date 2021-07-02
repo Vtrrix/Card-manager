@@ -12,12 +12,19 @@
     <title>Cards</title>
   </head>
   <body>
-    <div id="nav">Vtrix</div>
-    <div id="cards">
-      <h1>Hey You Dumass!! You are Logged in</h1>
-      <p id="cookie"></p>
+    <div id="nav">
+      <h2>Welcome, Vtrix</h2>
+      <button id="logout" class="button">Logout</button>
     </div>
-    <button id="clearCookie">CLEAR COOKIE</button>
+
+    <div id="cards">
+      <div class="cardbox">
+        <div class="card">
+          <div class="card-front">${card.account_holder}</div>
+          <div class="card-back">${card.cvv}</div>
+        </div>
+      </div>
+    </div>
 
     <script src="/profile.js"></script>
   </body>

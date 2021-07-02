@@ -1,6 +1,13 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 body {
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
+}
+#main {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -42,6 +49,7 @@ body {
   transform: translateX(-5%);
   color: rgba(0, 0, 0, 0.719);
   width: max-content;
+  margin-bottom: 20px;
 }
 
 form {
@@ -64,10 +72,11 @@ form {
     "Lucida Sans", Arial, sans-serif;
   font-weight: 900;
   color: rgb(117, 117, 117);
-  width: 90%;
-  height: 35px;
+  width: 100%;
+  height: 40px;
+  padding: 30px;
   border-radius: 4px;
-  padding: 16px;
+  margin-top: 20px;
   margin-bottom: 14px;
   border: 3px solid rgba(103, 100, 255, 0);
   transition: 0.09s ease-in-out;
@@ -138,6 +147,7 @@ form {
   }
   .signup {
     width: 0;
+    transform: translateY(0);
   }
   /* .signup{ */
   /* height: 0; */
@@ -170,7 +180,7 @@ form {
 /* The alert message box */
 .alert {
   padding: 20px;
-  background-color: #f44336; /* Red */
+  background-color: #f44336;
   color: white;
   margin-bottom: 15px;
   display: none;
@@ -193,4 +203,96 @@ form {
 /* When moving the mouse over the close button */
 .closebtn:hover {
   color: black;
+}
+
+/* profile page styles--------------------------------- */
+
+#nav {
+  background: rgba(103, 100, 255, 1);
+  color: rgb(252, 252, 252);
+  width: 100%;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+}
+#nav h2 {
+  font-size: 2rem;
+}
+#logout {
+  width: 150px;
+  height: 35px;
+  position: relative;
+  background: rgb(252, 252, 252);
+  color: rgba(130, 127, 254, 1);
+  cursor: pointer;
+  padding: 0 12px;
+}
+#logout:hover {
+  background: rgb(230, 230, 230);
+}
+
+/* ------------------------------------------------------------------------ */
+
+#cards {
+  padding-top: 65px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.cardbox {
+  perspective: 500px;
+  margin: 25px;
+  width: fit-content;
+}
+
+.card {
+  position: relative;
+  border-radius: 5%; /* 모서리 */
+  width: 350px;
+  height: 200px;
+  background: #fff;
+  transform-style: preserve-3d;
+  transition: 0.25s ease;
+  box-shadow: 0 30px 30px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  background: rgba(130, 127, 254, 1);
+}
+
+/* 카드 색상. 1열 */
+
+.card-front,
+.card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  color: #fff;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  font-size: 40px;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.card-back {
+  font-size: 25px;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.cardbox:hover .card {
+  transform: rotateY(180deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
 }
