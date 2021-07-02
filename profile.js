@@ -71,12 +71,7 @@ let GetCards = async () => {
       console.log(result);
       result.cards.map((card) => {
         cardsDisplayArea.innerHTML += `
-          <div class="cardbox">
-            <div class="card">
-              <div class="card-front">${card.account_holder}</div>
-              <div class="card-back">${card.cvv}</div>
-            </div>
-          </div>
+         <div> a</div>
         `;
       });
     })
