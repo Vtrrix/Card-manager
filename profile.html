@@ -14,11 +14,15 @@
   <body>
     <div id="nav">
       <h2>Welcome, Vtrix</h2>
-      <button id="logout" class="button">Logout</button>
+      <div id="actions">
+        <button id="showAddCard" class="button navButton">Add Card</button>
+
+        <button id="logout" class="button navButton">Logout</button>
+      </div>
     </div>
     <div id="content">
-      <div id="cards"></div>
       <div id="addCard">
+        <button id="closeForm" class="button">Close</button>
         <form id="addCardForm">
           <input
             type="text"
@@ -57,6 +61,7 @@
           <button class="button" id="addCardButton">Add</button>
         </form>
       </div>
+      <div id="cards"></div>
     </div>
 
     <script src="./profile.js"></script>

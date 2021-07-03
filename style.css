@@ -226,7 +226,7 @@ form {
 #nav h2 {
   font-size: 2rem;
 }
-#logout {
+.navButton {
   width: 150px;
   height: 35px;
   position: relative;
@@ -234,8 +234,9 @@ form {
   color: rgba(130, 127, 254, 1);
   cursor: pointer;
   padding: 0 12px;
+  margin-left: 5px;
 }
-#logout:hover {
+.navButton:hover {
   background: rgb(230, 230, 230);
 }
 
@@ -416,12 +417,26 @@ form {
 
 /* add card form styles------------------------------------------------- */
 #addCard {
-  width: 100%;
-  display: flex;
+  display: none;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  background: #303030ec;
+  height: 100vh;
+  width: 100vw;
 }
 .selector {
   padding: 0 0 0 30px;
   height: 68px;
+}
+#closeForm {
+  position: absolute;
+  top: 7%;
+  right: 10%;
+  width: fit-content;
+  height: fit-content;
+  padding: 4px 14px;
 }

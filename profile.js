@@ -1,5 +1,7 @@
 let cardsDisplayArea = document.getElementById("cards");
+let navName = document.querySelector("#nav h2");
 
+navName.innerText = `Welcome, ${getCookie("userName")}`;
 function getCookie(cname) {
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
@@ -79,6 +81,22 @@ let GetCards = async () => {
 GetCards();
 
 // add card--------------------------------------------------------------
+
+let formVisible = false;
+let toggleAddCard = document.getElementById("showAddCard");
+let addCardFormDiv = document.getElementById("addCard");
+let closeForm = document.getElementById("closeForm");
+
+function toggleForm() {
+  if (formVisible) {
+    addCardFormDiv.style.display = "none";
+  } else {
+    addCardFormDiv.style.display = "flex";
+  }
+  formVisible = !formVisible;
+}
+closeForm.addEventListener("click", toggleForm);
+showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
   var myHeaders = new Headers();
