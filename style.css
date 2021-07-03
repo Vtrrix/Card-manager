@@ -205,7 +205,7 @@ form {
   color: black;
 }
 
-/* profile page styles--------------------------------- */
+/* profile page styles------------------------------------------------- */
 
 #nav {
   background: rgba(103, 100, 255, 1);
@@ -231,7 +231,7 @@ form {
   background: rgb(230, 230, 230);
 }
 
-/* ------------------------------------------------------------------------ */
+/* card styles------------------------------------------------------------------------ */
 #cards {
   margin-top: 45px;
   display: flex;
@@ -254,15 +254,14 @@ form {
   display: inline-block;
   width: 320px;
   height: 190px;
-  background-image: url("https://image.ibb.co/bVnMrc/g3095.png"),
-    linear-gradient(
-      to right bottom,
-      #fd696b,
-      #fa616e,
-      #f65871,
-      #f15075,
-      #ec4879
-    ); /*linear-gradient(to right bottom, #fd8369, #fc7870, #f96e78, #f56581, #ee5d8a)*/
+  background: linear-gradient(
+    to right bottom,
+    #fd696b,
+    #fa616e,
+    #f65871,
+    #f15075,
+    #ec4879
+  );
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -403,4 +402,16 @@ form {
 .card:hover .card__back {
   -webkit-transform: rotateY(0deg);
   -moz-transform: rotateY(0deg);
+}
+
+/* add card form styles------------------------------------------------- */
+#addCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.selector {
+  padding: 0 0 0 30px;
+  height: 68px;
 }

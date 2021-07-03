@@ -26,33 +26,7 @@ let logoutUser = () => {
 };
 document.getElementById("logout").addEventListener("click", logoutUser);
 
-//Add and get cards request methods
-
-let AddCard = async () => {
-  var myHeaders = new Headers();
-  myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify({
-    card_type: "debit",
-    card_no: 1121555,
-    cvv: 424,
-    account_holder: "vtrix sony",
-    phone_number: "9856471425",
-  });
-
-  var requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  fetch("https://sql-injection-restapi.herokuapp.com/card/vtx", requestOptions)
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.log("error", error));
-};
+//get cards request methods------------------------------------------
 
 let GetCards = async () => {
   var myHeaders = new Headers();
@@ -71,7 +45,28 @@ let GetCards = async () => {
       console.log(result);
       result.cards.map((card) => {
         cardsDisplayArea.innerHTML += `
-         <div> a</div>
+        <div class="card">
+          <div class="card__front card__part">
+            <p class="card_numer">${card.card_no}</p>
+            <div class="card__space-75">
+              <span class="card__label">Card holder</span>
+              <p class="card__info">${card.account_holder}</p>
+            </div>
+            <div class="card__space-25">
+              <span class="card__label">Expires</span>
+              <p class="card__info">10/25</p>
+            </div>
+          </div>
+
+          <div class="card__back card__part">
+            <div class="card__black-line"></div>
+            <div class="card__back-content">
+              <div class="card__secret">
+                <p class="card__secret--last">${card.cvv}</p>
+              </div>
+            </div>
+          </div>
+        </div>
         `;
       });
     })
@@ -79,3 +74,42 @@ let GetCards = async () => {
 };
 
 GetCards();
+
+// add card--------------------------------------------------------------
+
+let AddCard = async (cardType, cardNum, CVV, accHolder, phoneNum) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    card_type: cardType,
+    card_no: parseInt(cardNum),
+    cvv: parseInt(CVV),
+    account_holder: accHolder,
+    phone_number: phoneNum,
+  });
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  fetch("https://sql-injection-restapi.herokuapp.com/card/vtx", requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.log("error", error));
+};
+let cardHolder = document.getElementById("cardHolder").value;
+let cardNum = document.getElementById("cardNum").value;
+let phoneNum = document.getElementById("phoneNum").value;
+let cardType = document.getElementById("cardType").value;
+let cvv = document.getElementById("cvv").value;
+let addCardButton = document.getElementById("addCardButton");
+
+addCardButton.addEventListener("click", () => {
+  event.preventDefault();
+  AddCard(cardType, cardNum, cvv, cardHolder, phoneNum);
+});
