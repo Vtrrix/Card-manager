@@ -74,6 +74,7 @@ let LogIn = async () => {
       clearCookie();
       if (result["access_token"]) {
         setCookie("userToken", result["access_token"], 1);
+        setCookie("userName", loginUserName.value, 1);
 
         location.replace("profile.html");
       } else {

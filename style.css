@@ -236,8 +236,10 @@ form {
   margin-top: 45px;
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 .card {
+  margin-bottom: 20px;
   width: 320px;
   height: 190px;
   -webkit-perspective: 600px;

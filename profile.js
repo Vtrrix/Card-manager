@@ -39,7 +39,10 @@ let GetCards = async () => {
     redirect: "follow",
   };
 
-  fetch("https://sql-injection-restapi.herokuapp.com/card/vtx", requestOptions)
+  fetch(
+    `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    requestOptions
+  )
     .then((response) => response.json())
     .then((result) => {
       console.log(result);
@@ -77,7 +80,7 @@ GetCards();
 
 // add card--------------------------------------------------------------
 
-let AddCard = async (cardType, cardNum, CVV, accHolder, phoneNum) => {
+let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
   var myHeaders = new Headers();
   myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
   myHeaders.append("Content-Type", "application/json");
@@ -85,7 +88,7 @@ let AddCard = async (cardType, cardNum, CVV, accHolder, phoneNum) => {
   var raw = JSON.stringify({
     card_type: cardType,
     card_no: parseInt(cardNum),
-    cvv: parseInt(CVV),
+    cvv: parseInt(cvvNum),
     account_holder: accHolder,
     phone_number: phoneNum,
   });
@@ -97,19 +100,28 @@ let AddCard = async (cardType, cardNum, CVV, accHolder, phoneNum) => {
     redirect: "follow",
   };
 
-  fetch("https://sql-injection-restapi.herokuapp.com/card/vtx", requestOptions)
+  fetch(
+    `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    requestOptions
+  )
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.log("error", error));
 };
-let cardHolder = document.getElementById("cardHolder").value;
-let cardNum = document.getElementById("cardNum").value;
-let phoneNum = document.getElementById("phoneNum").value;
-let cardType = document.getElementById("cardType").value;
-let cvv = document.getElementById("cvv").value;
+let cardHolder = document.getElementById("cardHolder");
+let cardNum = document.getElementById("cardNum");
+let phoneNum = document.getElementById("phoneNum");
+let cardType = document.getElementById("cardType");
+let cvv = document.getElementById("cvv");
 let addCardButton = document.getElementById("addCardButton");
 
 addCardButton.addEventListener("click", () => {
   event.preventDefault();
-  AddCard(cardType, cardNum, cvv, cardHolder, phoneNum);
+  AddCard(
+    cardType.value,
+    cardNum.value,
+    cvv.value,
+    cardHolder.value,
+    phoneNum.value
+  );
 });
