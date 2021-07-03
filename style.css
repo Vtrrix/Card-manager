@@ -180,14 +180,22 @@ form {
 /* The alert message box */
 .alert {
   padding: 20px;
-  background-color: #f44336;
+  background-color: #ee4f44;
   color: white;
   margin-bottom: 15px;
   display: none;
+  border-radius: 4px;
   /* display: flex; */
   /* flex-direction: row; */
 }
-
+.signupPrompt {
+  padding: 20px;
+  background-color: #46f436;
+  color: white;
+  margin-bottom: 15px;
+  display: none;
+  border-radius: 4px;
+}
 /* The close button */
 .closebtn {
   margin-left: 15px;

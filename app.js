@@ -4,10 +4,10 @@ let passlabel = document.getElementById("passlabel");
 let loginUserName = document.getElementById("username");
 let loginPassword = document.getElementById("user_pass");
 let logInButton = document.querySelector(".logInButton");
-let alertPrompt = document.querySelector(".alert");
+let loginAlertPrompt = document.querySelector(".loginAlert");
 
-function showAlert() {
-  alertPrompt.style.display = "initial";
+function loginShowAlert() {
+  loginAlertPrompt.style.display = "initial";
 }
 
 loginUserName.addEventListener("focus", () => {
@@ -78,7 +78,7 @@ let LogIn = async () => {
 
         location.replace("profile.html");
       } else {
-        showAlert();
+        loginShowAlert();
       }
     })
     .catch((error) => console.log("error", error));
@@ -92,6 +92,16 @@ let handlelabel = document.getElementById("handlelabel");
 let signupUserName = document.getElementById("userhandle");
 let signupPassword = document.getElementById("user_passSignup");
 let signupButton = document.querySelector(".SignUpButton");
+let signupAlertPrompt = document.querySelector(".signupAlert");
+let signupPrompt = document.querySelector(".signupPrompt");
+
+function signUpShowAlert() {
+  signupAlertPrompt.style.display = "initial";
+}
+
+function signUpShowPrompt() {
+  signupPrompt.style.display = "initial";
+}
 
 signupUserName.addEventListener("focus", () => {
   handlelabel.style.top = 0;
@@ -133,8 +143,15 @@ let SignUp = async () => {
     "https://sql-injection-restapi.herokuapp.com/user/register",
     requestOptions
   )
-    .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+      if (result.message === "username is in use") {
+        signUpShowAlert();
+      } else {
+        signUpShowPrompt();
+      }
+    })
     .catch((error) => console.log("error", error));
 };
 signupButton.addEventListener("click", SignUp);

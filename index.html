@@ -15,7 +15,7 @@
     <div id="main">
       <div class="flex-container">
         <div class="login">
-          <div class="alert">
+          <div class="loginAlert alert">
             Incorrect Username or Password
             <span
               class="closebtn"
@@ -63,6 +63,24 @@
 
         <div class="signup">
           <h1 id="signupHeading">Sign Up</h1>
+          <div class="signupAlert alert">
+            Username already exists
+            <span
+              class="closebtn"
+              onclick="this.parentElement.style.display='none';"
+            >
+              &times;
+            </span>
+          </div>
+          <div class="signupPrompt prompt">
+            You Are Ready to Go!
+            <span
+              class="closebtn"
+              onclick="this.parentElement.style.display='none';"
+            >
+              &times;
+            </span>
+          </div>
           <p id="error-text"></p>
           <form method="POST" id="signup-form">
             <label for="userhandle" id="handlelabel" class="label"

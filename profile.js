@@ -105,7 +105,10 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
     requestOptions
   )
     .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((result) => {
+      console.log(result);
+      location.reload();
+    })
     .catch((error) => console.log("error", error));
 };
 let cardHolder = document.getElementById("cardHolder");
