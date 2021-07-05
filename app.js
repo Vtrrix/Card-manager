@@ -56,30 +56,40 @@ let LogIn = async () => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  var raw = JSON.stringify({
-    username: loginUserName.value,
-    password: loginPassword.value,
-  });
+  // var raw = JSON.stringify({
+  // for secure--------------------------------------------------------------
+  // username: loginUserName.value,
+  // password: loginPassword.value,
+  // ---------------------------------------------------------------------
+  // });
 
   var requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
+    // method: "POST",
+    method: "GET",
+    // headers: myHeaders,
+    // body: raw,
     redirect: "follow",
   };
 
-  fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
+  // for secure------------------------------------------------------------------------
+  // fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
+  // ---------------------------------------------------------------------------------
+
+  fetch(
+    `https://sql-injection-restapi.herokuapp.com/login?username=${loginUserName.value}&password=${loginPassword.value}`,
+    requestOptions
+  )
     .then((response) => response.json())
     .then((result) => {
       clearCookie();
-      if (result["access_token"]) {
-        setCookie("userToken", result["access_token"], 1);
-        setCookie("userName", loginUserName.value, 1);
+      // if (result["access_token"]) {
+      setCookie("userToken", result["access_token"], 1);
+      setCookie("userName", loginUserName.value, 1);
 
-        location.replace("profile.html");
-      } else {
-        loginShowAlert();
-      }
+      location.replace("profile.html");
+      // } else {
+      // loginShowAlert();
+      // }
     })
     .catch((error) => console.log("error", error));
 };
@@ -156,7 +166,7 @@ let SignUp = async () => {
 };
 signupButton.addEventListener("click", SignUp);
 
-//To make signup appear
+//To make signup appear-------------------------------------------------------------
 
 let createAccLink = document.getElementById("createAccLink");
 let signup = document.querySelector(".signup");

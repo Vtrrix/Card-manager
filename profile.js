@@ -32,7 +32,7 @@ document.getElementById("logout").addEventListener("click", logoutUser);
 
 let GetCards = async () => {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
+  // myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
   myHeaders.append("Content-Type", "application/json");
 
   var requestOptions = {
@@ -100,7 +100,7 @@ showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
+  // myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
