@@ -50,30 +50,73 @@ function clearCookie() {
   console.log("cookie cleared", document.cookie);
 }
 
+// ======================================secure===================================
+// let LogIn = async () => {
+//   event.preventDefault();
+
+//   var myHeaders = new Headers();
+//   myHeaders.append("Content-Type", "application/json");
+
+//   var raw = JSON.stringify({
+//     username: loginUserName.value,
+//     password: loginPassword.value,
+//   });
+
+//   var requestOptions = {
+//     method: "POST",
+//     headers: myHeaders,
+//     body: raw,
+//     redirect: "follow",
+//   };
+
+//   fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
+//     .then((response) => response.json())
+//     .then((result) => {
+//       if (result.message === "username not found") {
+//         throw new Error("Invalid creds");
+//       }
+
+//       clearCookie();
+//       if (result["access_token"]) {
+//         setCookie("userToken", result["access_token"], 1);
+
+//         location.replace("profile.html");
+//       } else {
+//         loginShowAlert();
+//       }
+//     })
+//     .catch((error) => {
+//       if (error.message === "Invalid creds") {
+//         loginShowAlert();
+//       }
+//       console.log("error", error);
+//     });
+// };
+// ==================================================================================
+
+// ======================================not secure===================================
+
 let LogIn = async () => {
   event.preventDefault();
 
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-
-  // var raw = JSON.stringify({
   // for secure--------------------------------------------------------------
+  // var raw = JSON.stringify({
   // username: loginUserName.value,
   // password: loginPassword.value,
-  // ---------------------------------------------------------------------
   // });
+  // ---------------------------------------------------------------------
 
   var requestOptions = {
-    // method: "POST",
     method: "GET",
+    // method: "POST",
     // headers: myHeaders,
     // body: raw,
     redirect: "follow",
   };
 
-  // for secure------------------------------------------------------------------------
   // fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
-  // ---------------------------------------------------------------------------------
 
   fetch(
     `https://sql-injection-restapi.herokuapp.com/login?username=${loginUserName.value}&password=${loginPassword.value}`,
@@ -81,18 +124,29 @@ let LogIn = async () => {
   )
     .then((response) => response.json())
     .then((result) => {
+      console.log("sdfds");
+      if (result.message === "username not found") {
+        throw new Error("Invalid creds");
+      }
+
       clearCookie();
       // if (result["access_token"]) {
-      setCookie("userToken", result["access_token"], 1);
+      // setCookie("userToken", result["access_token"], 1);
       setCookie("userName", loginUserName.value, 1);
-
       location.replace("profile.html");
       // } else {
       // loginShowAlert();
       // }
     })
-    .catch((error) => console.log("error", error));
+    .catch((error) => {
+      if (error.message === "Invalid creds") {
+        loginShowAlert();
+      }
+      console.log("error", error);
+    });
 };
+// ==================================================================================
+
 logInButton.addEventListener("click", LogIn);
 
 //For signup
@@ -135,7 +189,6 @@ let SignUp = async () => {
   event.preventDefault();
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  // myHeaders.append("Access-Control-Allow-Origin", "*");
 
   var raw = JSON.stringify({
     username: signupUserName.value,
@@ -157,12 +210,17 @@ let SignUp = async () => {
     .then((result) => {
       console.log(result);
       if (result.message === "username is in use") {
-        signUpShowAlert();
+        throw new Error("username already taken");
       } else {
         signUpShowPrompt();
       }
     })
-    .catch((error) => console.log("error", error));
+    .catch((error) => {
+      if (error.message === "username already taken") {
+        signUpShowAlert();
+      }
+      console.log("error", error);
+    });
 };
 signupButton.addEventListener("click", SignUp);
 
