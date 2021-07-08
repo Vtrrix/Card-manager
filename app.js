@@ -69,7 +69,7 @@ function clearCookie() {
 //     redirect: "follow",
 //   };
 
-//   fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
+//   fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
 //     .then((response) => response.json())
 //     .then((result) => {
 //       if (result.message === "username not found") {
@@ -79,6 +79,7 @@ function clearCookie() {
 //       clearCookie();
 //       if (result["access_token"]) {
 //         setCookie("userToken", result["access_token"], 1);
+//         setCookie("userName", loginUserName.value, 1);
 
 //         location.replace("profile.html");
 //       } else {
@@ -149,7 +150,7 @@ let LogIn = async () => {
 
 logInButton.addEventListener("click", LogIn);
 
-//For signup
+//For signup===========================================================
 
 let passlabelSignup = document.getElementById("passlabelSignup");
 let handlelabel = document.getElementById("handlelabel");
@@ -203,7 +204,13 @@ let SignUp = async () => {
   };
 
   fetch(
+    // ==================================secure===================================
+    // "https://secure-restapi.herokuapp.com/user/register",
+    // =====================================================================
+
+    // ==================================not secure===================================
     "https://sql-injection-restapi.herokuapp.com/user/register",
+    // =========================================================================
     requestOptions
   )
     .then((response) => response.json())

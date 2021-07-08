@@ -31,12 +31,16 @@ document.getElementById("logout").addEventListener("click", logoutUser);
 //get cards request methods------------------------------------------
 
 let GetCards = async () => {
+  console.log(document.cookie);
+
   var myHeaders = new Headers();
   //==================================== secure ==============================================
   // myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
-  //===================================================================================
+  //============================================================================================
 
+  //==================================== not secure ==============================================
   myHeaders.append("Content-Type", "application/json");
+  //==========================================================================================
 
   var requestOptions = {
     method: "GET",
@@ -45,7 +49,13 @@ let GetCards = async () => {
   };
 
   fetch(
+    //==================================== secure ==============================================
+    // `https://secure-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    //==================================================================================
+    //==================================== not secure ==============================================
     `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    //==================================================================================
+
     requestOptions
   )
     .then((response) => response.json())
@@ -102,10 +112,12 @@ closeForm.addEventListener("click", toggleForm);
 showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
+  console.log(getCookie("userToken"));
+
   var myHeaders = new Headers();
   //==================================== secure ==============================================
   // myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
-  //==================================================================================
+  //=========================================================================================
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
@@ -124,7 +136,13 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
   };
 
   fetch(
+    //==================================== secure ==============================================
+    // `https://secure-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    //==================================================================================
+    //==================================== not secure ==============================================
     `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    //==================================================================================
+
     requestOptions
   )
     .then((response) => response.text())
