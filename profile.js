@@ -64,12 +64,21 @@ let GetCards = async () => {
         <div class="card">
           <div class="card__front card__part">
             <p class="card_numer">${
-              CheckInput(card.card_no) ? " " : card.card_no
+              //======================== secure XSS==============================================
+              CheckInput(card.card_no)
+                ? " "
+                : //=================================================================================================
+                  card.card_no
             }</p>
             <div class="card__space-75">
               <span class="card__label">Card holder</span>
               <p class="card__info">${
-                CheckInput(card.account_holder) ? " " : card.account_holder
+                //======================== secure XSS==============================================
+
+                CheckInput(card.account_holder)
+                  ? " "
+                  : //=================================================================================================
+                    card.account_holder
               }</p>
             </div>
             <div class="card__space-25">
@@ -83,7 +92,11 @@ let GetCards = async () => {
             <div class="card__back-content">
               <div class="card__secret">
                 <p class="card__secret--last">${
-                  CheckInput(card.cvv) ? " " : card.cvv
+                  //======================== secure XSS==============================================
+                  CheckInput(card.cvv)
+                    ? " "
+                    : //====================================================================================================
+                      card.cvv
                 }</p>
               </div>
             </div>

@@ -201,7 +201,9 @@ signupPassword.addEventListener("focusout", () => {
 
 let SignUp = async () => {
   event.preventDefault();
+  //===================================== secure broken auth================================
   if (CheckPassword(signupPassword.value)) {
+    //=============================================================================================
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -250,11 +252,14 @@ let SignUp = async () => {
         }
         console.log("error", error);
       });
+
+    //==========================================secure broken auth=============================================
   } else {
     signUpShowAlert(
       "Password must be atleast 8 characters, contain at least one numeric digit and a special character"
     );
   }
+  //======================================================================================================
 };
 signupButton.addEventListener("click", SignUp);
 
