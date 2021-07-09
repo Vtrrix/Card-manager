@@ -63,10 +63,14 @@ let GetCards = async () => {
         cardsDisplayArea.innerHTML += `
         <div class="card">
           <div class="card__front card__part">
-            <p class="card_numer">${card.card_no}</p>
+            <p class="card_numer">${
+              CheckInput(card.card_no) ? " " : card.card_no
+            }</p>
             <div class="card__space-75">
               <span class="card__label">Card holder</span>
-              <p class="card__info">${card.account_holder}</p>
+              <p class="card__info">${
+                CheckInput(card.account_holder) ? " " : card.account_holder
+              }</p>
             </div>
             <div class="card__space-25">
               <span class="card__label">Expires</span>
@@ -78,7 +82,9 @@ let GetCards = async () => {
             <div class="card__black-line"></div>
             <div class="card__back-content">
               <div class="card__secret">
-                <p class="card__secret--last">${card.cvv}</p>
+                <p class="card__secret--last">${
+                  CheckInput(card.cvv) ? " " : card.cvv
+                }</p>
               </div>
             </div>
           </div>
@@ -97,6 +103,7 @@ let formVisible = false;
 let toggleAddCard = document.getElementById("showAddCard");
 let addCardFormDiv = document.getElementById("addCard");
 let closeForm = document.getElementById("closeForm");
+let AddCardAlertPrompt = document.querySelector(".AddCardAlert");
 
 function toggleForm() {
   if (formVisible) {
@@ -111,44 +118,55 @@ showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
   console.log(getCookie("userToken"));
-
-  var myHeaders = new Headers();
-  //==================================== secure ==============================================
-  myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
-  //=========================================================================================
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify({
-    card_type: cardType,
-    card_no: parseInt(cardNum),
-    cvv: parseInt(cvvNum),
-    account_holder: accHolder,
-    phone_number: phoneNum,
-  });
-
-  var requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  fetch(
+  //==================================== secure XSS==============================================
+  if (
+    !CheckInput(cardType) &&
+    !CheckInput(accHolder) &&
+    !CheckInput(phoneNum)
+  ) {
+    //==============================================================================
+    var myHeaders = new Headers();
     //==================================== secure ==============================================
-    `https://secure-restapi.herokuapp.com/card/${getCookie("userName")}`,
-    //==================================================================================
-    //==================================== not secure ==============================================
-    // `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
-    //==================================================================================
+    myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
+    //=========================================================================================
+    myHeaders.append("Content-Type", "application/json");
 
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => {
-      console.log(result);
-      location.reload();
-    })
-    .catch((error) => console.log("error", error));
+    var raw = JSON.stringify({
+      card_type: cardType,
+      card_no: parseInt(cardNum),
+      cvv: parseInt(cvvNum),
+      account_holder: accHolder,
+      phone_number: phoneNum,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      //==================================== secure ==============================================
+      `https://secure-restapi.herokuapp.com/card/${getCookie("userName")}`,
+      //==================================================================================
+      //==================================== not secure ==============================================
+      // `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
+      //==================================================================================
+
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        location.reload();
+      })
+      .catch((error) => console.log("error", error));
+    //==================================== secure XSS==============================================
+  } else {
+    AddCardAlertPrompt.style.display = "initial";
+  }
+  //============================================================================================
 };
 let cardHolder = document.getElementById("cardHolder");
 let cardNum = document.getElementById("cardNum");
@@ -157,16 +175,14 @@ let cardType = document.getElementById("cardType");
 let cvv = document.getElementById("cvv");
 let addCardButton = document.getElementById("addCardButton");
 
-// function ResetInput() {
-//   cardType.value = "";
-//   cardNum.value = 0;
-//   cvv.value = 0;
-//   cardHolder.value = "";
-//   phoneNum.value = "";
-// }
+function CheckInput(str) {
+  var pattern = /<(.*)>/;
+  return pattern.test(str);
+}
 
 addCardButton.addEventListener("click", () => {
   event.preventDefault();
+
   AddCard(
     cardType.value,
     cardNum.value,
@@ -174,5 +190,4 @@ addCardButton.addEventListener("click", () => {
     cardHolder.value,
     phoneNum.value
   );
-  // ResetInput();
 });

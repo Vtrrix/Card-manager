@@ -163,7 +163,8 @@ let signupPrompt = document.querySelector(".signupPrompt");
 
 function CheckPassword(inputTxt) {
   console.log(typeof inputTxt);
-  var pass = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
+  var pass =
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/;
   if (inputTxt.match(pass)) {
     return true;
   } else {
@@ -243,13 +244,15 @@ let SignUp = async () => {
           signUpShowAlert("Username already exists");
         }
         if (error.message === "weak password") {
-          signUpShowAlert("Password too weak");
+          signUpShowAlert(
+            "Password must be atleast 8 characters, contain at least one numeric digit and a special character"
+          );
         }
         console.log("error", error);
       });
   } else {
     signUpShowAlert(
-      "Password must be between 7 to 15 characters, contain at least one numeric digit and a special character"
+      "Password must be atleast 8 characters, contain at least one numeric digit and a special character"
     );
   }
 };
