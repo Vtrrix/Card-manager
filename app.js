@@ -50,41 +50,95 @@ function clearCookie() {
   console.log("cookie cleared", document.cookie);
 }
 
-// ======================================secure===================================
+// ======================================secure================================================
+let LogIn = async () => {
+  event.preventDefault();
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    username: loginUserName.value,
+    password: loginPassword.value,
+  });
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      if (result.message === "username not found") {
+        throw new Error("Invalid creds");
+      }
+
+      clearCookie();
+      if (result["access_token"]) {
+        setCookie("userToken", result["access_token"], 1);
+        setCookie("userName", loginUserName.value, 1);
+
+        location.replace("profile.html");
+      } else {
+        loginShowAlert();
+      }
+    })
+    .catch((error) => {
+      if (error.message === "Invalid creds") {
+        loginShowAlert();
+      }
+
+      console.log("error", error);
+    });
+};
+// ==================================================================================
+
+// ======================================not secure===================================
+
 // let LogIn = async () => {
 //   event.preventDefault();
 
 //   var myHeaders = new Headers();
 //   myHeaders.append("Content-Type", "application/json");
-
-//   var raw = JSON.stringify({
-//     username: loginUserName.value,
-//     password: loginPassword.value,
-//   });
+//   // for secure--------------------------------------------------------------
+//   // var raw = JSON.stringify({
+//   // username: loginUserName.value,
+//   // password: loginPassword.value,
+//   // });
+//   // ---------------------------------------------------------------------
 
 //   var requestOptions = {
-//     method: "POST",
-//     headers: myHeaders,
-//     body: raw,
+//     method: "GET",
+//     // method: "POST",
+//     // headers: myHeaders,
+//     // body: raw,
 //     redirect: "follow",
 //   };
 
-//   fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
+//   // fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
+
+//   fetch(
+//     `https://sql-injection-restapi.herokuapp.com/login?username=${loginUserName.value}&password=${loginPassword.value}`,
+//     requestOptions
+//   )
 //     .then((response) => response.json())
 //     .then((result) => {
+//       console.log("sdfds");
 //       if (result.message === "username not found") {
 //         throw new Error("Invalid creds");
 //       }
 
 //       clearCookie();
-//       if (result["access_token"]) {
-//         setCookie("userToken", result["access_token"], 1);
-//         setCookie("userName", loginUserName.value, 1);
-
-//         location.replace("profile.html");
-//       } else {
-//         loginShowAlert();
-//       }
+//       // if (result["access_token"]) {
+//       // setCookie("userToken", result["access_token"], 1);
+//       setCookie("userName", loginUserName.value, 1);
+//       location.replace("profile.html");
+//       // } else {
+//       // loginShowAlert();
+//       // }
 //     })
 //     .catch((error) => {
 //       if (error.message === "Invalid creds") {
@@ -93,59 +147,6 @@ function clearCookie() {
 //       console.log("error", error);
 //     });
 // };
-// ==================================================================================
-
-// ======================================not secure===================================
-
-let LogIn = async () => {
-  event.preventDefault();
-
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  // for secure--------------------------------------------------------------
-  // var raw = JSON.stringify({
-  // username: loginUserName.value,
-  // password: loginPassword.value,
-  // });
-  // ---------------------------------------------------------------------
-
-  var requestOptions = {
-    method: "GET",
-    // method: "POST",
-    // headers: myHeaders,
-    // body: raw,
-    redirect: "follow",
-  };
-
-  // fetch("https://sql-injection-restapi.herokuapp.com/auth", requestOptions)
-
-  fetch(
-    `https://sql-injection-restapi.herokuapp.com/login?username=${loginUserName.value}&password=${loginPassword.value}`,
-    requestOptions
-  )
-    .then((response) => response.json())
-    .then((result) => {
-      console.log("sdfds");
-      if (result.message === "username not found") {
-        throw new Error("Invalid creds");
-      }
-
-      clearCookie();
-      // if (result["access_token"]) {
-      // setCookie("userToken", result["access_token"], 1);
-      setCookie("userName", loginUserName.value, 1);
-      location.replace("profile.html");
-      // } else {
-      // loginShowAlert();
-      // }
-    })
-    .catch((error) => {
-      if (error.message === "Invalid creds") {
-        loginShowAlert();
-      }
-      console.log("error", error);
-    });
-};
 // ==================================================================================
 
 logInButton.addEventListener("click", LogIn);
@@ -160,8 +161,19 @@ let signupButton = document.querySelector(".SignUpButton");
 let signupAlertPrompt = document.querySelector(".signupAlert");
 let signupPrompt = document.querySelector(".signupPrompt");
 
-function signUpShowAlert() {
-  signupAlertPrompt.style.display = "initial";
+function CheckPassword(inputTxt) {
+  console.log(typeof inputTxt);
+  var pass = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
+  if (inputTxt.match(pass)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function signUpShowAlert(message) {
+  signupAlertPrompt.children[0].innerText = message;
+  signupAlertPrompt.style.display = "flex";
 }
 
 function signUpShowPrompt() {
@@ -188,46 +200,58 @@ signupPassword.addEventListener("focusout", () => {
 
 let SignUp = async () => {
   event.preventDefault();
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+  if (CheckPassword(signupPassword.value)) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-  var raw = JSON.stringify({
-    username: signupUserName.value,
-    password: signupPassword.value,
-  });
-
-  var requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  fetch(
-    // ==================================secure===================================
-    // "https://secure-restapi.herokuapp.com/user/register",
-    // =====================================================================
-
-    // ==================================not secure===================================
-    "https://sql-injection-restapi.herokuapp.com/user/register",
-    // =========================================================================
-    requestOptions
-  )
-    .then((response) => response.json())
-    .then((result) => {
-      console.log(result);
-      if (result.message === "username is in use") {
-        throw new Error("username already taken");
-      } else {
-        signUpShowPrompt();
-      }
-    })
-    .catch((error) => {
-      if (error.message === "username already taken") {
-        signUpShowAlert();
-      }
-      console.log("error", error);
+    var raw = JSON.stringify({
+      username: signupUserName.value,
+      password: signupPassword.value,
     });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      // ==================================secure===================================
+      "https://secure-restapi.herokuapp.com/user/register",
+      // =====================================================================
+
+      // ==================================not secure===================================
+      // "https://sql-injection-restapi.herokuapp.com/user/register",
+      // =========================================================================
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.message === "username is in use") {
+          throw new Error("username already taken");
+        }
+        if (result.message === "password too weak") {
+          throw new Error("weak password");
+        } else {
+          signUpShowPrompt();
+        }
+      })
+      .catch((error) => {
+        if (error.message === "username already taken") {
+          signUpShowAlert("Username already exists");
+        }
+        if (error.message === "weak password") {
+          signUpShowAlert("Password too weak");
+        }
+        console.log("error", error);
+      });
+  } else {
+    signUpShowAlert(
+      "Password must be between 7 to 15 characters, contain at least one numeric digit and a special character"
+    );
+  }
 };
 signupButton.addEventListener("click", SignUp);
 
