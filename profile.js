@@ -148,7 +148,7 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
       card_no: parseInt(cardNum),
       cvv: parseInt(cvvNum),
       account_holder: accHolder,
-      phone_number: 9894434255,
+      phone_number: 0,
       expiry_date: expDate,
     });
 

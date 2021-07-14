@@ -53,46 +53,48 @@ function clearCookie() {
 // ======================================secure================================================
 let LogIn = async () => {
   event.preventDefault();
+  if (validateCreds(signupUserName.value)) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify({
-    username: loginUserName.value,
-    password: loginPassword.value,
-  });
-
-  var requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-      if (result.message === "username not found") {
-        throw new Error("Invalid creds");
-      }
-
-      clearCookie();
-      if (result["access_token"]) {
-        setCookie("userToken", result["access_token"], 1);
-        setCookie("userName", loginUserName.value, 1);
-
-        location.replace("profile.html");
-      } else {
-        loginShowAlert();
-      }
-    })
-    .catch((error) => {
-      if (error.message === "Invalid creds") {
-        loginShowAlert();
-      }
-
-      console.log("error", error);
+    var raw = JSON.stringify({
+      username: loginUserName.value,
+      password: loginPassword.value,
     });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.message === "username not found") {
+          throw new Error("Invalid creds");
+        }
+
+        if (result["access_token"]) {
+          setCookie("userToken", result["access_token"], 1);
+          setCookie("userName", loginUserName.value, 1);
+
+          location.replace("profile.html");
+        } else {
+          loginShowAlert();
+        }
+      })
+      .catch((error) => {
+        if (error.message === "Invalid creds") {
+          loginShowAlert();
+        }
+
+        console.log("error", error);
+      });
+  } else {
+    loginShowAlert();
+  }
 };
 // ==================================================================================
 
@@ -201,7 +203,10 @@ signupPassword.addEventListener("focusout", () => {
 let SignUp = async () => {
   event.preventDefault();
   //===================================== secure broken auth================================
-  if (CheckPassword(signupPassword.value)) {
+  if (
+    CheckPassword(signupPassword.value) &&
+    validateCreds(signupUserName.value)
+  ) {
     //=============================================================================================
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -280,4 +285,14 @@ if (window.innerWidth >= 1050) {
   });
 }
 
-// https://sql-injection-api.herokuapp.com/user/register
+//credential validation ==================================================
+
+function validateCreds(str) {
+  var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+  if (format.test(str)) {
+    return true;
+  } else {
+    return false;
+  }
+}
