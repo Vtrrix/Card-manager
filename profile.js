@@ -60,6 +60,7 @@ let GetCards = async () => {
     .then((result) => {
       console.log(result);
       result.cards.map((card) => {
+        let expdate = new Date(parseInt(card.expiry_date));
         cardsDisplayArea.innerHTML += `
         <div class="card">
           <div class="card__front card__part">
@@ -83,7 +84,9 @@ let GetCards = async () => {
             </div>
             <div class="card__space-25">
               <span class="card__label">Expires</span>
-              <p class="card__info">10/25</p>
+              <p class="card__info">${("0" + (expdate.getMonth() + 1)).slice(
+                -2
+              )}/${expdate.getFullYear().toString().substr(-2)}</p>
             </div>
           </div>
 
@@ -129,14 +132,10 @@ function toggleForm() {
 closeForm.addEventListener("click", toggleForm);
 showAddCard.addEventListener("click", toggleForm);
 
-let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
+let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
   console.log(getCookie("userToken"));
   //==================================== secure XSS==============================================
-  if (
-    !CheckInput(cardType) &&
-    !CheckInput(accHolder) &&
-    !CheckInput(phoneNum)
-  ) {
+  if (!CheckInput(cardType) && !CheckInput(accHolder)) {
     //==============================================================================
     var myHeaders = new Headers();
     //==================================== secure ==============================================
@@ -149,8 +148,8 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
       card_no: parseInt(cardNum),
       cvv: parseInt(cvvNum),
       account_holder: accHolder,
-      phone_number: phoneNum,
-      expiry_date: "1626250105758",
+      phone_number: 9894434255,
+      expiry_date: expDate,
     });
 
     var requestOptions = {
@@ -184,7 +183,7 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, phoneNum) => {
 };
 let cardHolder = document.getElementById("cardHolder");
 let cardNum = document.getElementById("cardNum");
-let phoneNum = document.getElementById("phoneNum");
+let expDate = document.getElementById("expDate");
 let cardType = document.getElementById("cardType");
 let cvv = document.getElementById("cvv");
 let addCardButton = document.getElementById("addCardButton");
@@ -197,11 +196,6 @@ function CheckInput(str) {
 addCardButton.addEventListener("click", () => {
   event.preventDefault();
 
-  AddCard(
-    cardType.value,
-    cardNum.value,
-    cvv.value,
-    cardHolder.value,
-    phoneNum.value
-  );
+  expDate = Date.parse(expDate.value);
+  AddCard(cardType.value, cardNum.value, cvv.value, cardHolder.value, expDate);
 });
