@@ -126,7 +126,6 @@ let LogIn = async () => {
 //   )
 //     .then((response) => response.json())
 //     .then((result) => {
-//       console.log("sdfds");
 //       if (result.message === "username not found") {
 //         throw new Error("Invalid creds");
 //       }
