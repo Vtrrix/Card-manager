@@ -1,4 +1,4 @@
-//For login
+//For login====================================================================
 let userlabel = document.getElementById("userlabel");
 let passlabel = document.getElementById("passlabel");
 let loginUserName = document.getElementById("username");
@@ -49,14 +49,17 @@ let LogIn = async () => {
     fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        // console.log(result);
+        console.log(result);
         if (result.message === "username not found") {
           throw new Error("Invalid creds");
         }
 
         if (result["access_token"]) {
           localStorage.setItem("userToken", result["access_token"]);
+          localStorage.setItem("csrfToken", result["csrf_token"]);
+          localStorage.setItem("refreshToken", result["refresh_token"]);
           localStorage.setItem("userName", loginUserName.value);
+
           location.replace("profile.html");
         } else {
           loginShowAlert();

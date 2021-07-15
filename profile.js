@@ -1,3 +1,25 @@
+//cookie functions ========================================
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 let cardsDisplayArea = document.getElementById("cards");
 let navName = document.querySelector("#nav h2");
 
@@ -7,6 +29,8 @@ let logoutUser = () => {
   location.replace("index.html");
   localStorage.removeItem("userToken");
   localStorage.removeItem("userName");
+  localStorage.removeItem("csrfToken");
+  localStorage.removeItem("refreshToken");
 };
 document.getElementById("logout").addEventListener("click", logoutUser);
 
@@ -15,7 +39,10 @@ document.getElementById("logout").addEventListener("click", logoutUser);
 let GetCards = async () => {
   var myHeaders = new Headers();
   //==================================== secure ==============================================
-  myHeaders.append("Authorization", `jwt ${localStorage.getItem("userToken")}`);
+  myHeaders.append(
+    "Authorization",
+    `Bearer ${localStorage.getItem("userToken")}`
+  );
   //============================================================================================
 
   myHeaders.append("Content-Type", "application/json");
@@ -115,7 +142,7 @@ closeForm.addEventListener("click", toggleForm);
 showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
-  console.log(localStorage.getItem("userToken"));
+  // console.log(localStorage.getItem("userToken"));
   //==================================== secure XSS==============================================
   if (!CheckInput(cardType) && !CheckInput(accHolder)) {
     //==============================================================================
@@ -123,10 +150,26 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
     //==================================== secure ==============================================
     myHeaders.append(
       "Authorization",
-      `jwt ${localStorage.getItem("userToken")}`
+      `Bearer ${localStorage.getItem("userToken")}`
     );
+    myHeaders.append("X-CSRFToken", localStorage.getItem("csrfToken"));
+    myHeaders.append("Referer", "https://secure-restapi.herokuapp.com");
     //=========================================================================================
     myHeaders.append("Content-Type", "application/json");
+
+    // setCookie(
+    //   "session",
+    //   "eyJjc3JmX3Rva2VuIjoiNGE5MDliYjhjY2I4YWY1ZjgzYmY0OGVkNzYyYzNlZjc2Njk4Yzk0ZCJ9.YPADSg.RznKVvl1y6oeESqkFMDs0-SYbTM",
+    //   1
+    // );
+    // setCookie("token", localStorage.getItem("userToken"), 1);
+    // alert(document.cookie);
+    myHeaders.append(
+      "Cookie",
+      document.cookie
+      // `session=
+      // ; token=${localStorage.getItem("userToken")}`
+    );
 
     var raw = JSON.stringify({
       card_type: cardType,
@@ -159,7 +202,7 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
-        location.reload();
+        // location.reload();
       })
       .catch((error) => console.log("error", error));
     //==================================== secure XSS==============================================
