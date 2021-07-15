@@ -122,7 +122,7 @@ let GetCards = async () => {
 
 GetCards();
 
-// add card--------------------------------------------------------------
+// add card-----------------------------------------------------------------------------------------------------
 
 let formVisible = false;
 let toggleAddCard = document.getElementById("showAddCard");
@@ -142,73 +142,89 @@ closeForm.addEventListener("click", toggleForm);
 showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
-  // console.log(localStorage.getItem("userToken"));
-  //==================================== secure XSS==============================================
-  if (!CheckInput(cardType) && !CheckInput(accHolder)) {
-    //==============================================================================
-    var myHeaders = new Headers();
-    //==================================== secure ==============================================
-    myHeaders.append(
-      "Authorization",
-      `Bearer ${localStorage.getItem("userToken")}`
-    );
-    myHeaders.append("X-CSRFToken", localStorage.getItem("csrfToken"));
-    myHeaders.append("Referer", "https://secure-restapi.herokuapp.com");
-    //=========================================================================================
-    myHeaders.append("Content-Type", "application/json");
+  var data = JSON.stringify({
+    card_type: "debit",
+    card_no: "8645546469",
+    cvv: "324",
+    account_holder: "Tambi",
+    phone_number: "8426988382",
+    expiry_date: "1626250105758",
+  });
 
-    // setCookie(
-    //   "session",
-    //   "eyJjc3JmX3Rva2VuIjoiNGE5MDliYjhjY2I4YWY1ZjgzYmY0OGVkNzYyYzNlZjc2Njk4Yzk0ZCJ9.YPADSg.RznKVvl1y6oeESqkFMDs0-SYbTM",
-    //   1
-    // );
-    // setCookie("token", localStorage.getItem("userToken"), 1);
-    // alert(document.cookie);
-    myHeaders.append(
-      "Cookie",
-      document.cookie
-      // `session=
-      // ; token=${localStorage.getItem("userToken")}`
-    );
+  var xhr = new XMLHttpRequest();
 
-    var raw = JSON.stringify({
-      card_type: cardType,
-      card_no: parseInt(cardNum),
-      cvv: parseInt(cvvNum),
-      account_holder: accHolder,
-      phone_number: 0,
-      expiry_date: expDate,
-    });
+  xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === 4) {
+      console.log(this.responseText);
+    }
+  });
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+  xhr.open("POST", "https://secure-restapi.herokuapp.com/card/tushar");
+  xhr.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("userToken")}`
+  );
+  xhr.setRequestHeader("X-CSRFToken", localStorage.getItem("csrfToken"));
+  xhr.setRequestHeader("Content-Type", "application/json");
 
-    fetch(
-      //==================================== secure ==============================================
-      `https://secure-restapi.herokuapp.com/card/${localStorage.getItem(
-        "userName"
-      )}`,
-      //==================================================================================
-      //==================================== not secure ==============================================
-      // `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
-      //==================================================================================
-
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        // location.reload();
-      })
-      .catch((error) => console.log("error", error));
-    //==================================== secure XSS==============================================
-  } else {
-    AddCardAlertPrompt.style.display = "initial";
-  }
+  xhr.send(data);
+  // // console.log(localStorage.getItem("userToken"));
+  // //==================================== secure XSS==============================================
+  // if (!CheckInput(cardType) && !CheckInput(accHolder)) {
+  //   //==============================================================================
+  //   var myHeaders = new Headers();
+  //   //==================================== secure ==============================================
+  //   myHeaders.append(
+  //     "Authorization",
+  //     `Bearer ${localStorage.getItem("userToken")}`
+  //   );
+  //   myHeaders.append("X-CSRFToken", localStorage.getItem("csrfToken"));
+  //   myHeaders.append("Referer", "https://secure-restapi.herokuapp.com");
+  //   //=========================================================================================
+  //   myHeaders.append("Content-Type", "application/json");
+  //   // setCookie(
+  //   //   "session"
+  //   //   "eyJjc3JmX3Rva2VuIjoiNGE5MDliYjhjY2I4YWY1ZjgzYmY0OGVkNzYyYzNlZjc2Njk4Yzk0ZCJ9.YPADSg.RznKVvl1y6oeESqkFMDs0-SYbTM",
+  //   //   1
+  //   // );
+  //   // setCookie("token", localStorage.getItem("userToken"), 1);
+  //   // alert(document.cookie);
+  //   var raw = JSON.stringify({
+  //     card_type: cardType,
+  //     card_no: parseInt(cardNum),
+  //     cvv: parseInt(cvvNum),
+  //     account_holder: accHolder,
+  //     phone_number: 0,
+  //     expiry_date: expDate,
+  //   });
+  //   var requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //     credentials: "same-origin",
+  //   };
+  //   fetch(
+  //     //==================================== secure ==============================================
+  //     `https://secure-restapi.herokuapp.com/card/${localStorage.getItem(
+  //       "userName"
+  //     )}`,
+  //     //==================================================================================
+  //     //==================================== not secure ==============================================
+  //     // `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
+  //     //==================================================================================
+  //     requestOptions
+  //   )
+  //     .then((response) => response.text())
+  //     .then((result) => {
+  //       console.log(result);
+  //       // location.reload();
+  //     })
+  //     .catch((error) => console.log("error", error));
+  //   //==================================== secure XSS==============================================
+  // } else {
+  //   AddCardAlertPrompt.style.display = "initial";
+  // }
   //============================================================================================
 };
 let cardHolder = document.getElementById("cardHolder");

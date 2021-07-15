@@ -28,28 +28,41 @@ loginPassword.addEventListener("focusout", () => {
 });
 
 // ======================================secure================================================
+
+// let headersList = {
+//   Accept: "*/*",
+//   "User-Agent": "Thunder Client (https://www.thunderclient.io)",
+//   "Content-Type": "application/json",
+// };
+
+// fetch("https://secure-restapi.herokuapp.com/auth", {
+//   method: "POST",
+//   body: '{\n    "username": "tushar",\n    "password": "R@m@_f0rtu9e$"\n}',
+//   headers: headersList,
+//   credentials: "same-origin",
+// })
+//   .then(function (response) {
+//     return response.text();
+//   })
+//   .then(function (data) {
+//     console.log(data);
+//   });
+
 let LogIn = async () => {
   event.preventDefault();
   if (validateCreds(signupUserName.value)) {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
+    var data = JSON.stringify({
       username: loginUserName.value,
       password: loginPassword.value,
     });
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+    var xhr = new XMLHttpRequest();
+    // xhr.withCredentials = true;
 
-    fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        var result = JSON.parse(this.responseText);
+        console.log(this.getAllResponseHeaders());
         if (result.message === "username not found") {
           throw new Error("Invalid creds");
         }
@@ -59,23 +72,101 @@ let LogIn = async () => {
           localStorage.setItem("csrfToken", result["csrf_token"]);
           localStorage.setItem("refreshToken", result["refresh_token"]);
           localStorage.setItem("userName", loginUserName.value);
-
-          location.replace("profile.html");
+          tempo();
+          // location.replace("profile.html");
         } else {
           loginShowAlert();
         }
-      })
-      .catch((error) => {
-        if (error.message === "Invalid creds") {
-          loginShowAlert();
-        }
-
-        console.log("error", error);
-      });
+      }
+    });
+    xhr.open("POST", "https://secure-restapi.herokuapp.com/auth");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.withCredentials = true;
+    xhr.send(data);
   } else {
     loginShowAlert();
   }
 };
+
+function tempo() {
+  var data = JSON.stringify({
+    card_type: "debit",
+    card_no: "8645546469",
+    cvv: "324",
+    account_holder: "Tambi",
+    phone_number: "8426988382",
+    expiry_date: "1626250105758",
+  });
+
+  var xhr = new XMLHttpRequest();
+
+  xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === 4) {
+      console.log(this.responseText);
+    }
+  });
+
+  xhr.open("POST", "https://secure-restapi.herokuapp.com/card/tushar");
+  xhr.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("userToken")}`
+  );
+  xhr.setRequestHeader("X-CSRFToken", localStorage.getItem("csrfToken"));
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.send(data);
+}
+
+// let LogIn = async () => {
+//   event.preventDefault();
+//   if (validateCreds(signupUserName.value)) {
+//     var myHeaders = new Headers();
+
+//     myHeaders.append("Content-Type", "application/json");
+
+//     var raw = JSON.stringify({
+//       username: loginUserName.value,
+//       password: loginPassword.value,
+//     });
+
+//     var requestOptions = {
+//       method: "POST",
+//       headers: myHeaders,
+//       body: raw,
+//       redirect: "follow",
+//       credentials: "same-origin",
+//     };
+
+//     fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
+//       .then((response) =>response.json())
+//       .then((result) => {
+//         console.log(result);
+//         if (result.message === "username not found") {
+//           throw new Error("Invalid creds");
+//         }
+
+//         if (result["access_token"]) {
+//           localStorage.setItem("userToken", result["access_token"]);
+//           localStorage.setItem("csrfToken", result["csrf_token"]);
+//           localStorage.setItem("refreshToken", result["refresh_token"]);
+//           localStorage.setItem("userName", loginUserName.value);
+
+//           // location.replace("profile.html");
+//         } else {
+//           loginShowAlert();
+//         }
+//       })
+//       .catch((error) => {
+//         if (error.message === "Invalid creds") {
+//           loginShowAlert();
+//         }
+
+//         console.log("error", error);
+//       });
+//   } else {
+//     loginShowAlert();
+//   }
+// };
 // ==================================================================================
 
 // ======================================not secure===================================
