@@ -27,29 +27,6 @@ loginPassword.addEventListener("focusout", () => {
   passlabel.style.opacity = 0;
 });
 
-function setCookie(cname, cvalue, exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function checkCookie(cname) {
-  let username = getCookie(cname);
-  if (username != "") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function clearCookie() {
-  var allCookies = document.cookie.split(";");
-  for (var i = 0; i < allCookies.length; i++)
-    document.cookie = allCookies[i] + "=;expires=" + new Date(0).toUTCString();
-  console.log("cookie cleared", document.cookie);
-}
-
 // ======================================secure================================================
 let LogIn = async () => {
   event.preventDefault();
@@ -72,14 +49,14 @@ let LogIn = async () => {
     fetch("https://secure-restapi.herokuapp.com/auth", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        // console.log(result);
         if (result.message === "username not found") {
           throw new Error("Invalid creds");
         }
 
         if (result["access_token"]) {
-          setCookie("userToken", result["access_token"], 1);
-          setCookie("userName", loginUserName.value, 1);
-
+          localStorage.setItem("userToken", result["access_token"]);
+          localStorage.setItem("userName", loginUserName.value);
           location.replace("profile.html");
         } else {
           loginShowAlert();

@@ -1,41 +1,21 @@
 let cardsDisplayArea = document.getElementById("cards");
 let navName = document.querySelector("#nav h2");
 
-navName.innerText = `Welcome, ${getCookie("userName")}`;
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-console.log(getCookie("userToken"));
+navName.innerText = `Welcome, ${localStorage.getItem("userName")}`;
 
 let logoutUser = () => {
   location.replace("index.html");
-  var allCookies = document.cookie.split(";");
-  for (var i = 0; i < allCookies.length; i++)
-    document.cookie = allCookies[i] + "=;expires=" + new Date(0).toUTCString();
-  console.log("cookie cleared", document.cookie);
+  localStorage.removeItem("userToken");
+  localStorage.removeItem("userName");
 };
 document.getElementById("logout").addEventListener("click", logoutUser);
 
 //get cards request methods------------------------------------------
 
 let GetCards = async () => {
-  console.log(document.cookie);
-
   var myHeaders = new Headers();
   //==================================== secure ==============================================
-  myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
+  myHeaders.append("Authorization", `jwt ${localStorage.getItem("userToken")}`);
   //============================================================================================
 
   myHeaders.append("Content-Type", "application/json");
@@ -48,7 +28,9 @@ let GetCards = async () => {
 
   fetch(
     //==================================== secure ==============================================
-    `https://secure-restapi.herokuapp.com/card/${getCookie("userName")}`,
+    `https://secure-restapi.herokuapp.com/card/${localStorage.getItem(
+      "userName"
+    )}`,
     //==================================================================================
     //==================================== not secure ==============================================
     // `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
@@ -133,13 +115,16 @@ closeForm.addEventListener("click", toggleForm);
 showAddCard.addEventListener("click", toggleForm);
 
 let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
-  console.log(getCookie("userToken"));
+  console.log(localStorage.getItem("userToken"));
   //==================================== secure XSS==============================================
   if (!CheckInput(cardType) && !CheckInput(accHolder)) {
     //==============================================================================
     var myHeaders = new Headers();
     //==================================== secure ==============================================
-    myHeaders.append("Authorization", `jwt ${getCookie("userToken")}`);
+    myHeaders.append(
+      "Authorization",
+      `jwt ${localStorage.getItem("userToken")}`
+    );
     //=========================================================================================
     myHeaders.append("Content-Type", "application/json");
 
@@ -161,7 +146,9 @@ let AddCard = async (cardType, cardNum, cvvNum, accHolder, expDate) => {
 
     fetch(
       //==================================== secure ==============================================
-      `https://secure-restapi.herokuapp.com/card/${getCookie("userName")}`,
+      `https://secure-restapi.herokuapp.com/card/${localStorage.getItem(
+        "userName"
+      )}`,
       //==================================================================================
       //==================================== not secure ==============================================
       // `https://sql-injection-restapi.herokuapp.com/card/${getCookie("userName")}`,
